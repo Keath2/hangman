@@ -9,7 +9,9 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 use function Keath2\hangman\Controller\menu;
 
 if (isset($argv[1])) {
-    menu($argv);
+    $key = $argv[1];
+    menu($key);
 } else {
-    echo "Key not entered\n";
+    $key = "-n";
+    menu($key);
 }

@@ -6,11 +6,11 @@ use function Keath2\hangman\View\showGame;
 
 function menu($key)
 {
-    if ($key[1] == "--new" || $key[1] == "-n") {
+    if ($key == "--new" || $key == "-n") {
         startGame();
-    } elseif ($key[1] == "--list" || $key[1] == "-l") {
+    } elseif ($key == "--list" || $key == "-l") {
         echo "Databas is being developed\n";
-    } elseif ($key[1] == "--replay" || $key[1] == "-r") {
+    } elseif ($key == "--replay" || $key == "-r") {
         echo "Replay is being developed\n";
     } else {
         echo "Wrong key\n";
