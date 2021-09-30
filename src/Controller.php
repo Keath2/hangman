@@ -30,7 +30,7 @@ function showResult($rightAnswers, $word, $lengthWord)
 
 function startGame()
 {
-    $wordBase = array("hidden", "game", "laptop");
+    $wordBase = array("hidden", "answer", "laptop", "unreal", "script");
     $randomChoice = random_int(0, count($wordBase) - 1);
     $word = $wordBase[$randomChoice];
     $lengthWord = strlen($word);
