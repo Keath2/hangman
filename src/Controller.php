@@ -1,9 +1,68 @@
 <?php
-	namespace Keath2\hangman\Controller;
-	use function Keath2\hangman\View\showGame;
-	
-	function startGame() {
-		showGame();
-		echo "Start";
-	}
-?>
+
+namespace Keath2\hangman\Controller;
+
+use function Keath2\hangman\View\showGame;
+
+function menu($key)
+{
+    if ($key[1] == "--new" || $key[1] == "-n") {
+        startGame();
+    } elseif ($key[1] == "--list" || $key[1] == "-l") {
+        echo "Databas is being developed\n";
+    } elseif ($key[1] == "--replay" || $key[1] == "-r") {
+        echo "Replay is being developed\n";
+    } else {
+        echo "Wrong key\n";
+    }
+}
+
+function showResult($rightAnswers, $word, $lengthWord)
+{
+    if ($rightAnswers == $lengthWord) {
+        echo "\n You win!";
+    } else {
+        echo "\n You lose!";
+    }
+
+    echo "\n The hidden word was: $word\n";
+}
+
+function startGame()
+{
+    $wordBase = array("hidden", "game", "laptop");
+    $randomChoice = random_int(0, count($wordBase) - 1);
+    $word = $wordBase[$randomChoice];
+    $lengthWord = strlen($word);
+    $remaining = $word;
+
+    $entryField = "";
+    for ($i = 0; $i < $lengthWord; $i++) {
+        $entryField .= ".";
+    }
+
+    $fails = 0;
+    $rightAnswers = 0;
+
+    while ($fails != 6 && $rightAnswers != $lengthWord) {
+        showGame($fails, $entryField);
+        $letter = mb_strtolower(readline("Letter: "));
+        $attempt = 0;
+
+        for ($i = 0; $i < strlen($remaining); $i++) {
+            if ($remaining[$i] == $letter) {
+                $entryField[$i] = $letter;
+                $remaining[$i] = " ";
+                $rightAnswers++;
+                $attempt++;
+            }
+        }
+
+        if ($attempt == 0) {
+            $fails++;
+        }
+    }
+
+    showGame($fails, $entryField);
+    showResult($rightAnswers, $word, $lengthWord);
+}

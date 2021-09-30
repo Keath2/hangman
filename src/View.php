@@ -1,7 +1,24 @@
 <?php
-	namespace Keath2\hangman\View;
-	
-	function showGame() {
-		echo "Show\n";
-	}
-?>
+
+namespace Keath2\hangman\View;
+
+function showGame($fails, $entryField)
+{
+    $pseudoGraphics = array (
+        " +---+\n     |\n     |\n     |\n    ===\n ",
+        " +---+\n 0   |\n     |\n     |\n    ===\n ",
+        " +---+\n 0   |\n |   |\n     |\n    ===\n ",
+        " +---+\n 0   |\n/|   |\n     |\n    ===\n ",
+        " +---+\n 0   |\n/|\  |\n     |\n    ===\n ",
+        " +---+\n 0   |\n/|\  |\n/    |\n    ===\n ",
+        " +---+\n 0   |\n/|\  |\n/ \  |\n    ===\n "
+    );
+
+    echo $pseudoGraphics[$fails];
+
+    for ($i = 0; $i < strlen($entryField); $i++) {
+        echo $entryField[$i];
+    }
+    echo "\n";
+    echo "\n";
+}
