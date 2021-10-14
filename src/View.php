@@ -14,11 +14,11 @@ function showGame($fails, $entryField)
         " +---+\n 0   |\n/|\  |\n/ \  |\n    ===\n "
     );
 
-    echo $pseudoGraphics[$fails];
+    \cli\line($pseudoGraphics[$fails]);
 
     for ($i = 0; $i < strlen($entryField); $i++) {
         echo $entryField[$i];
     }
-    echo "\n";
-    echo "\n";
+    \cli\line("");
+    \cli\line("");
 }

@@ -7,11 +7,12 @@ if (file_exists(__DIR__ . '/../vendor/autoload.php')) {
 }
 
 use function Keath2\hangman\Controller\menu;
+use function Keath2\hangman\Controller\menuReplay;
 
-if (isset($argv[1])) {
-    $key = $argv[1];
-    menu($key);
+if (isset($argv[1]) && isset($argv[2])) {
+    menuReplay($argv[1], $argv[2]);
+} elseif (isset($argv[1])) {
+    menu($argv[1]);
 } else {
-    $key = "-n";
-    menu($key);
+    menu("-n");
 }
