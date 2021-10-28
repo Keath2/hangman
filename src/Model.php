@@ -2,15 +2,15 @@
 
 namespace Keath2\hangman\Model;
 
-use SQLite3;
+use RedBeanPHP\R as R;
 
 use function cli\line;
 use function Keath2\hangman\View\showGame;
 
+R::setup('sqlite:DB.db');
+
 function createDB()
 {
-    $root = new SQLite3('DB.db');
-
     $table = "CREATE TABLE playerInfo(
         id INTEGER PRIMARY KEY,
         gameDate DATE,
@@ -18,30 +18,27 @@ function createDB()
         nickname TEXT,
         word TEXT,
         result TEXT)";
-    $root->exec($table);
+    R::exec($table);
 
     $tableAttempts = "CREATE TABLE attemptsInfo(
         id INTEGER KEY,
         progress INTEGER,
         letter TEXT,
         result TEXT)";
-    $root->exec($tableAttempts);
+    R::exec($tableAttempts);
 }
 
 function openDB()
 {
     if (!file_exists('DB.db')) {
-        $root = createDB();
-    } else {
-        $root = new SQLite3('DB.db');
+        createDB();
     }
-    return $root;
 }
 
 function createRecord($gameDate, $gameTime, $nickname, $word)
 {
-    $root = openDB();
-    $root->exec("INSERT INTO playerInfo(
+    openDB();
+    R::exec("INSERT INTO playerInfo(
             gameDate,
             gameTime,
             nickname,
@@ -54,14 +51,14 @@ function createRecord($gameDate, $gameTime, $nickname, $word)
             '$word',
             'Dont finished')");
 
-    $id = $root->querySingle("SELECT id FROM playerInfo ORDER BY id DESC LIMIT 1");
+    $id = R::getCell("SELECT id FROM playerInfo ORDER BY id DESC LIMIT 1");
     return $id;
 }
 
 function addAttemptsInfo($id, $progress, $letter, $result)
 {
-    $root = openDB();
-    $root->exec("INSERT INTO attemptsInfo(
+    openDB();
+    R::exec("INSERT INTO attemptsInfo(
             id,
             progress,
             letter,
@@ -74,43 +71,42 @@ function addAttemptsInfo($id, $progress, $letter, $result)
 
 function updateDB($id, $result)
 {
-    $root = openDB();
-    $root->exec("UPDATE playerInfo
+    openDB();
+    R::exec("UPDATE playerInfo
             SET result = '$result'
             WHERE id = '$id'");
 }
 
 function gameList()
 {
-    $root = openDB();
-    $query = $root->query('SELECT * FROM playerInfo');
-    while ($row = $query->fetchArray()) {
-        line("Id: $row[0]\n
-        Date: $row[1]\n
-        Time: $row[2]\n
-        Name: $row[3]\n
-        Word: $row[4]\n
-        Result: $row[5]\n");
+    openDB();
+    $query = R::getAll('SELECT * FROM playerInfo');
+    foreach ($query as $row) {
+        line("Id: $row[id]\n
+        Date: $row[gameDate]\n
+        Time: $row[gameTime]\n
+        Name: $row[nickname]\n
+        Word: $row[word]\n
+        Result: $row[result]\n");
     }
 }
 
 function gameReplay($id)
 {
-    $root = openDB();
-    //$id = $root->querySingle("SELECT EXISTS(SELECT 1 FROM playerInfo WHERE id = '$id')");
+    openDB();
 
     if ($id) {
-        $query = $root->query("SELECT letter, result FROM attemptsInfo WHERE id = '$id'");
-        $word = $root->querySingle("SELECT word FROM playerInfo WHERE id = '$id'");
+        $query = R::getAll("SELECT letter, result FROM attemptsInfo WHERE id = '$id'");
+        $word = R::getCell("SELECT word FROM playerInfo WHERE id = '$id'");
 
         $entryField = "......";
         $remaining = $word;
         $fails = 0;
 
-        while ($row = $query->fetchArray()) {
+        foreach ($query as $row) {
             showGame($fails, $entryField);
-            $letter = $row[0];
-            $result = $row[1];
+            $letter = $row["letter"];
+            $result = $row["result"];
             line("Letter: " . $letter);
             for ($i = 0; $i < strlen($remaining); $i++) {
                 if ($remaining[$i] == $letter) {

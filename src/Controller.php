@@ -49,7 +49,6 @@ function showResult($word, $result)
 
 function startGame()
 {
-    $root = openDB();
     date_default_timezone_set("Europe/Moscow");
     $gameDate = date("d") . "." . date("m") . "." . date("Y");
     $gameTime = date("H") . ":" . date("i") . ":" . date("s");
